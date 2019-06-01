@@ -1,0 +1,16 @@
+version: '2'
+services:
+  nestjs-scrapper:
+    image: 'node:8.12'
+    working_dir: /app
+    user: node
+    volumes:
+      - '.:/app'
+    environment:
+      # API
+      - NODE_ENV=development
+      - PORT=3000
+      - BASE_PATH=/api
+    command: npm run start:dev
+    ports:
+      - '3000:3000'
