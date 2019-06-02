@@ -1,4 +1,4 @@
-import { INestApplication, INestExpressApplication } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as rateLimit from 'express-rate-limit';
@@ -9,8 +9,8 @@ import { apiConfig } from './config/api.config';
 import { securityConfig } from './config/security.config';
 
 export class AppInitializer {
-  private application: INestExpressApplication & INestApplication;
-  constructor(app: INestExpressApplication & INestApplication) {
+  private application: INestApplication;
+  constructor(app: INestApplication) {
     this.application = app;
   }
 
