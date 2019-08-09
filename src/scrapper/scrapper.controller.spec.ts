@@ -27,7 +27,7 @@ describe('ScrapperController', () => {
 
   describe('scrap()', () => {
     it('should call scrapperService.scrap', async () => {
-      await scrapperController.scrap();
+      await scrapperController.scrap({});
       expect(scrapperServiceMock.scrap).toHaveBeenCalled();
     });
   });

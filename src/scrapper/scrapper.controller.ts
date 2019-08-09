@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, Logger, LoggerService } from '@nestjs/common';
+import { Controller, Get, HttpCode, Logger, LoggerService, Query } from '@nestjs/common';
 
 import { ScrapperService } from './scrapper.service';
 
@@ -11,8 +11,8 @@ export class ScrapperController {
 
   @Get()
   @HttpCode(200)
-  scrap(): Promise<any> {
-    this.logger.log('Scrap');
-    return this.scrapperService.scrap();
+  scrap(@Query() query: any): Promise<any> {
+    this.logger.log(`Scraping... ${query.code} ${query.isin}`);
+    return this.scrapperService.scrap(query.code, query.isin);
   }
 }
