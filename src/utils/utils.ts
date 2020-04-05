@@ -1,5 +1,9 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { Page } from 'puppeteer';
 
+/* @Deprecated
+ **
+ */
 const getUrlFromCode = (code: string): string => {
   switch (code) {
     case 'CMZ':
@@ -15,29 +19,45 @@ const getUrlFromCode = (code: string): string => {
   }
 };
 
+/* @Deprecated
+ **
+ */
 const concate = (str1: string, str2: string): string => `${str1}${str2}`;
 
+/* @Deprecated
+ **
+ */
 export const getUrl = (code: string, isin: string): string => {
   const url: string = getUrlFromCode(code);
   if (!url) throw new HttpException({ status: HttpStatus.BAD_REQUEST, error: `Invalid code ${code}` }, 400);
   return concate(url, isin);
 };
 
-export const scrapFromCode = async (page, code: string) => {
+export const scrapFromCode = async (page: Page, code: string) => {
   switch (code) {
     case 'CMZ':
       return await scrapCMZ(page);
     case 'SG':
       return await scrapSG(page);
-    case 'BOURSO':
+    case 'BS':
       return await scrapBOURSO(page);
-    case 'VONTOBEL':
+    case 'VTB':
       return await scrapVONTOBEL(page);
+    case 'INVEST':
+      return await scrapINVEST(page);
+    case 'GEF':
+      return await scrapGEF(page);
+    case 'XE':
+      return await scrapXE(page);
   }
 };
 
-const scrapSG = async page => {
-  return page.$eval('span.blinkable-marketdata-product', e => e.innerText);
+const scrapSG = async (page: Page) => {
+  // Accept SG conditions
+  const [button] = await page.$x("//button[contains(., 'Accept')]");
+  await Promise.all([page.waitForNavigation(), button.click()]);
+  await page.waitFor('div[class*=productPriceBid]');
+  return page.$eval('div[class*=productPriceBid] h5[class*=priceValue]', (e: any) => e.innerText);
 };
 
 const scrapBOURSO = async page => {
@@ -65,7 +85,19 @@ const scrapCMZ = async page => {
   return result;
 };
 
+const scrapXE = async page => {
+  return page.$eval('span[class="converterresult-toAmount"]', e => e.innerText);
+};
+
+const scrapINVEST = async page => {
+  return page.$eval('span#last_last', e => e.innerText.replace('.', ''));
+};
+
+const scrapGEF = async page => {
+  return page.$eval('span[class="produitPrixTotal"] > span#tpa', e => e.innerText);
+};
+
 export const cleanResult = (result: string): string => {
   let dotResult = result.replace(/,/g, '.');
-  return dotResult.replace(/[\s€\$]/g, '');
+  return dotResult.replace(/[\s€EUR\$]/g, '');
 };

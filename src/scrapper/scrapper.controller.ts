@@ -1,6 +1,7 @@
 import { Controller, Get, HttpCode, Logger, LoggerService, Query } from '@nestjs/common';
 
 import { ScrapperService } from './scrapper.service';
+import { ScrapParams } from './validation/srap.params';
 
 @Controller('scrap')
 export class ScrapperController {
@@ -11,8 +12,9 @@ export class ScrapperController {
 
   @Get()
   @HttpCode(200)
-  scrap(@Query() query: any): Promise<any> {
-    this.logger.log(`Scraping... ${query.code} ${query.isin}`);
-    return this.scrapperService.scrap(query.code, query.isin);
+  scrap(@Query() params: ScrapParams): Promise<any> {
+    const { url, code } = params;
+    this.logger.log(`Scraping... ${code} -  ${url}`);
+    return this.scrapperService.scrap(code, url);
   }
 }
