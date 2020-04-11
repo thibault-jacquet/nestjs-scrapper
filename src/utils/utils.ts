@@ -94,7 +94,7 @@ const scrapINVEST = async page => {
 };
 
 const scrapGEF = async page => {
-  return page.$eval('span[class="produitPrixTotal"] > span#tpa', e => e.innerText);
+  return page.$eval('span[class="produitPrixTotal"] > span#tpv', e => e.innerText);
 };
 
 export const cleanResult = (result: string): string => {
