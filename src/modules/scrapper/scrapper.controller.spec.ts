@@ -1,5 +1,6 @@
 import { Test } from '@nestjs/testing';
-import { ScrapperController } from '../scrapper/scrapper.controller';
+
+import { ScrapperController } from './scrapper.controller';
 
 const scrapperServiceMock = {
   scrap: jest.fn(() => Promise.resolve()),
@@ -27,7 +28,7 @@ describe('ScrapperController', () => {
 
   describe('scrap()', () => {
     it('should call scrapperService.scrap', async () => {
-      await scrapperController.scrap({});
+      await scrapperController.scrap({ code: 'sg', url: 'osef' });
       expect(scrapperServiceMock.scrap).toHaveBeenCalled();
     });
   });
