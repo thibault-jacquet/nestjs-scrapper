@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
 
-import { ScrapperController } from '../scrapper/scrapper.controller';
+import { ScrapperController } from './scrapper.controller';
 
 const scrapperServiceMock = {
   scrap: jest.fn(() => Promise.resolve()),

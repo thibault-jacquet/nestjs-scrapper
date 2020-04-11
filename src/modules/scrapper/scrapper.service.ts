@@ -1,20 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import * as puppeteer from 'puppeteer';
 
-import { CONVERT_EURO_DOLLAR_URL } from '../config/convert.config';
-import { cleanResult, scrapFromCode } from '../utils/utils';
+import { cleanResult, scrapFromCode } from '../../utils/utils';
 
 @Injectable()
-export class ConvertService {
+export class ScrapperService {
   // TODO Refacto code avec le code et supprimer l'url
-  convert = async (amount: string): Promise<any> => {
+  scrap = async (code: string, url: string): Promise<any> => {
     let browser: puppeteer.Browser;
     try {
       browser = await puppeteer.launch({ headless: true });
       const page = await browser.newPage();
-      await page.goto(`${CONVERT_EURO_DOLLAR_URL}${amount}`);
-      await page.waitFor(300);
-      let result = await scrapFromCode(page, 'XE');
+      await page.goto(url);
+      await page.waitFor(500);
+      let result = await scrapFromCode(page, code);
       browser.close();
       result = cleanResult(result);
       if (isNaN(result)) throw new Error(`Scraped result: ${result} is not a number, maybe the Xpath used is available anymore`);
@@ -25,4 +24,6 @@ export class ConvertService {
       return e;
     }
   };
+
+  convert = async (): Promise<any> => {};
 }
