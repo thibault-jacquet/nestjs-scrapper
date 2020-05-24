@@ -54,7 +54,10 @@ export const scrapFromCode = async (page: Page, code: string) => {
 
 const scrapSG = async (page: Page) => {
   // Accept SG conditions
-  const [button] = await page.$x("//button[contains(., 'Accept')]");
+  await page.waitFor('div[class=disclaimer]');
+  const [checkbox] = await page.$x("//div[@class='disclaimer-accept']/p-checkbox");
+  await checkbox.click();
+  const [button] = await page.$x("//button[contains(@class, 'button-accept')]");
   await Promise.all([page.waitForNavigation(), button.click()]);
   await page.waitFor('div[class*=productPriceBid]');
   return page.$eval('div[class*=productPriceBid] h5[class*=priceValue]', (e: any) => e.innerText);
